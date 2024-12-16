@@ -1,0 +1,32 @@
+schema:
+  - internal/pkg/*/schema/*.graphqls
+  - internal/pkg/*/*/schema/*.graphqls
+
+exec:
+  filename: internal/core/graph/generated.go
+  package: graph
+
+model:
+  filename: internal/core/graph/model/models.gen.go
+  package: model
+
+resolver:
+  layout: follow-schema
+  dir: internal/pkg/resolvers
+  package: graph
+  filename_template: "{name}.resolvers.go"
+
+call_argument_directives_with_null: true
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
