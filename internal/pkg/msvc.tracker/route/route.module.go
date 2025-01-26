@@ -1,24 +1,24 @@
-package domainItem
+package route
 
 import (
-	"app/internal/pkg/domainItem/ctrl"
-	"app/internal/pkg/domainItem/svc"
+	"app/internal/pkg/msvc.tracker/route/ctrl"
+	"app/internal/pkg/msvc.tracker/route/svc"
 )
 
 // Module represents the domain item module, including its name, version, and API controller.
 type Module struct {
 	name    string
 	version string
-	API     *ctrl.DomainItemController
+	API     *ctrl.RouteController
 }
 
 // New creates a new instance of the Module, initializing the service and controller.
 func New() Module {
-	service := svc.NewDomainItemService()
-	controller := ctrl.NewDomainItemController(service)
+	service := svc.NewRouteService()
+	controller := ctrl.NewRouteController(service)
 
 	return Module{
-		name:    "DomainItem",
+		name:    "Route",
 		version: "v1",
 		API:     controller,
 	}

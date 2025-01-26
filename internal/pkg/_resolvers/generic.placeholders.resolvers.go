@@ -6,19 +6,18 @@ package graph
 
 import (
 	"app/internal/core/graph"
-	"app/internal/core/graph/model"
 	"context"
 	"fmt"
 )
 
-// MutateSomething is the resolver for the mutateSomething field.
-func (r *mutationResolver) MutateSomething(ctx context.Context, input model.MutateSomethingDto) (*model.Something, error) {
-	panic(fmt.Errorf("not implemented: MutateSomething - mutateSomething"))
+// Placeholder is the resolver for the _placeholder field.
+func (r *mutationResolver) Placeholder(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: Placeholder - _placeholder"))
 }
 
-// Somethings is the resolver for the somethings field.
-func (r *queryResolver) Somethings(ctx context.Context) ([]*model.Something, error) {
-	return r.DomainItem.API.Somethings(ctx)
+// Placeholder is the resolver for the _placeholder field.
+func (r *queryResolver) Placeholder(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: Placeholder - _placeholder"))
 }
 
 // Mutation returns graph.MutationResolver implementation.

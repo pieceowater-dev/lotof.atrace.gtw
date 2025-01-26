@@ -1,0 +1,35 @@
+extend type Query {
+    getRoutes(filter: DefaultFilterInput!): PaginatedRouteList! @auth
+    getRoute(id: ID!): Route @auth
+}
+
+extend type Mutation {
+    createRoute(input: CreateRouteInput!): Route! @auth
+    deleteRoute(id: ID!): Route! @auth
+}
+
+type Route {
+    id: ID!
+    title: String!
+    milestones: [RouteMilestone!]!
+}
+
+type RouteMilestone {
+    postId: ID!
+    priority: Int!
+}
+
+type PaginatedRouteList {
+    routes: [Route!]!
+    paginationInfo: PaginationInfo!
+}
+
+input CreateRouteInput {
+    title: String!
+    milestones: [CreateRouteMilestoneInput!]!
+}
+
+input CreateRouteMilestoneInput {
+    postId: ID!
+    priority: Int!
+}

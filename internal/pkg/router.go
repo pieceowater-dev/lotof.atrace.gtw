@@ -3,7 +3,9 @@ package pkg
 import (
 	"app/internal/core/generic/interfaces"
 	resolvers "app/internal/pkg/_resolvers"
-	"app/internal/pkg/domainItem"
+	postSvc "app/internal/pkg/msvc.tracker/post"
+	recordSvc "app/internal/pkg/msvc.tracker/record"
+	routeSvc "app/internal/pkg/msvc.tracker/route"
 	"google.golang.org/grpc"
 	"reflect"
 )
@@ -15,11 +17,15 @@ type Router struct {
 
 // NewRouter creates a new Router instance and initializes the domainItem module.
 func NewRouter() *Router {
-	domainItemModule := domainItem.New()
+	postModule := postSvc.New()
+	recordModule := recordSvc.New()
+	routeModule := routeSvc.New()
 
 	return &Router{
 		modules: map[string]interfaces.IModule{
-			domainItemModule.Name(): domainItemModule,
+			postModule.Name():   postModule,
+			recordModule.Name(): recordModule,
+			routeModule.Name():  routeModule,
 		},
 	}
 }
@@ -48,10 +54,9 @@ func (r *Router) initializeGQLResolvers() *resolvers.Resolver {
 	return resolver
 }
 
-// initializeGRPCRoutes initializes the gRPC routes for all modules.
-func (r *Router) initializeGRPCRoutes(_ *grpc.Server) {
-	//example: pb.RegisterSomeServiceServer(server, r.someModule.Controller)
-	panic("Not implemented")
+// InitializeGRPCRoutes initializes the gRPC routes for all modules.
+func (r *Router) InitializeGRPCRoutes(server *grpc.Server) {
+	//pb.RegisterGatewayServiceServer(server, r.modules["NamespacesMod"].(ns.Module).API)
 }
 
 // GetModules returns the map of modules.

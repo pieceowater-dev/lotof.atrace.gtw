@@ -29,20 +29,20 @@ enum FilterSortByEnum {
 
 # Input Type for filtering Users with pagination and sorting
 input DefaultFilterInput {
-    search: String # Search term for filtering results
-    pagination: DefaultFilterPaginationInput # Pagination details
-    sort: DefaultFilterSortInput # Sorting criteria
+    search: String
+    pagination: DefaultFilterPaginationInput
+    sort: DefaultFilterSortInput
 }
 
 # Pagination Input
 input DefaultFilterPaginationInput {
-    page: Int # Page number for pagination
-    length: FilterPaginationLengthEnum # Number of items per page
+    page: Int
+    length: FilterPaginationLengthEnum
 }
 
 # Sorting Input
 input DefaultFilterSortInput {
-    field: String # Field to sort by
-    by: FilterSortByEnum # Direction of sorting
-    nullsFirst: Boolean # Whether null values should be sorted first
+    field: String
+    by: FilterSortByEnum
+    nullsFirst: Boolean
 }

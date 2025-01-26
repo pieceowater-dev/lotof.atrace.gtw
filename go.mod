@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.56
 	github.com/joho/godotenv v1.5.1
 	github.com/pieceowater-dev/lotof.atrace.proto v0.0.15
+	github.com/pieceowater-dev/lotof.hub.proto v0.0.59
 	github.com/pieceowater-dev/lotof.lib.gossiper/v2 v2.0.9
 	github.com/vektah/gqlparser/v2 v2.5.19
 	google.golang.org/grpc v1.68.0

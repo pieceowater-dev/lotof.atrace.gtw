@@ -6,11 +6,14 @@ import (
 	"app/internal/pkg"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	gossiper "github.com/pieceowater-dev/lotof.lib.gossiper/v2"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net/http"
+	"sync"
 )
 
-// main is the entry point for the application.
 func main() {
 	// Load application configuration.
 	appCfg := cfg.Inst()
@@ -18,16 +21,20 @@ func main() {
 	// Initialize the application router.
 	appRouter := pkg.NewRouter()
 
-	// If this gateway serves as grpc server somehow uncomment below
-	// serverManager := gossiper.NewServerManager()
-	// serverManager.AddServer(gossiper.NewGRPCServ(appCfg.GrpcPort, grpc.NewServer(), appRouter.InitGRPC))
-	// var wg sync.WaitGroup
-	// wg.Add(1)
-	// // Start gRPC servers in a goroutine
-	// go func() {
-	//  defer wg.Done()
-	//  serverManager.StartAll()
-	// }()
+	// Initialize gRPC server and server manager.
+	serverManager := gossiper.NewServerManager()
+	grpcServ := grpc.NewServer()
+	reflection.Register(grpcServ)
+	serverManager.AddServer(gossiper.NewGRPCServ(appCfg.GrpcPort, grpcServ, appRouter.InitializeGRPCRoutes))
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	// Start gRPC servers in a goroutine.
+	go func() {
+		defer wg.Done()
+		defer serverManager.StopAll()
+		serverManager.StartAll()
+	}()
 
 	// Initialize resolvers.
 	resolvers, err := appRouter.InitializeRouter()
@@ -36,19 +43,20 @@ func main() {
 	}
 
 	// Create GraphQL server.
-	srv := handler.NewDefaultServer(
-		graph.NewExecutableSchema(
-			graph.Config{
-				Resolvers: resolvers.(graph.ResolverRoot),
-			},
-		),
-	)
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
+		Resolvers:  resolvers.(graph.ResolverRoot),
+		Directives: graph.DirectiveRoot{
+			//Auth: func(ctx context.Context, obj any, next graphql.Resolver) (any, error) {
+			//return middleware.AuthDirective(ctx, next, resolvers.(*res.Resolver).AuthMod.API.VerifyToken)
+			//},
+		},
+	}))
 
 	// Set up the HTTP routes.
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
 	// Start the HTTP server.
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", cfg.Inst().AppPort)
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", appCfg.AppPort)
 	log.Fatal(http.ListenAndServe(":"+appCfg.AppPort, nil))
 }

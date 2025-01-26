@@ -1,0 +1,40 @@
+extend type Query {
+    getRecords(filter: DefaultFilterInput!): PaginatedRecordList! @auth
+    getRecordByPostId(filter: GetByPostIdInput!): Record @auth
+}
+
+extend type Mutation {
+    createRecord(input: CreateRecordInput!): Record! @auth
+}
+
+type Record {
+    id: ID!
+    postId: ID!
+    userId: ID!
+    timestamp: Int!
+    method: RecordMethod!
+}
+
+enum RecordMethod {
+    METHOD_UNKNOWN
+    METHOD_POST_PHRASE
+    METHOD_QR
+    METHOD_QR_STATIC
+}
+
+type PaginatedRecordList {
+    records: [Record!]!
+    paginationInfo: PaginationInfo!
+}
+
+input CreateRecordInput {
+    postId: ID!
+    userId: ID!
+    method: RecordMethod!
+}
+
+input GetByPostIdInput {
+    postId: ID!
+    pagination: DefaultFilterPaginationInput
+    sort: DefaultFilterSortInput
+}

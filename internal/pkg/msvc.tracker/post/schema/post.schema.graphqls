@@ -1,0 +1,46 @@
+extend type Query {
+    getPosts(filter: DefaultFilterInput!): PaginatedPostList! @auth
+    getPost(id: ID!): Post @auth
+}
+
+extend type Mutation {
+    createPost(input: CreatePostInput!): Post! @auth
+    deletePost(id: ID!): Post! @auth
+}
+
+type Post {
+    id: ID!
+    title: String!
+    description: String
+    location: PostLocation
+}
+
+type PostLocation {
+    comment: String
+    country: String
+    city: String
+    address: String
+    latitude: Float
+    longitude: Float
+}
+
+type PaginatedPostList {
+    posts: [Post!]!
+    paginationInfo: PaginationInfo!
+}
+
+input CreatePostInput {
+    title: String!
+    description: String
+    phrase: String!
+    location: PostLocationInput!
+}
+
+input PostLocationInput{
+    comment: String
+    country: String
+    city: String
+    address: String
+    latitude: Float
+    longitude: Float
+}
