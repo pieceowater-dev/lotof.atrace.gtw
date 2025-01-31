@@ -2,7 +2,9 @@ package pkg
 
 import (
 	"app/internal/core/generic/interfaces"
+	pb "app/internal/core/grpc/generated/generic/tenants"
 	resolvers "app/internal/pkg/_resolvers"
+	"app/internal/pkg/gateway"
 	postSvc "app/internal/pkg/msvc.tracker/post"
 	recordSvc "app/internal/pkg/msvc.tracker/record"
 	routeSvc "app/internal/pkg/msvc.tracker/route"
@@ -17,12 +19,16 @@ type Router struct {
 
 // NewRouter creates a new Router instance and initializes the domainItem module.
 func NewRouter() *Router {
+	gatewayModule := gateway.New()
+
 	postModule := postSvc.New()
 	recordModule := recordSvc.New()
 	routeModule := routeSvc.New()
 
 	return &Router{
 		modules: map[string]interfaces.IModule{
+			gatewayModule.Name(): gatewayModule,
+
 			postModule.Name():   postModule,
 			recordModule.Name(): recordModule,
 			routeModule.Name():  routeModule,
@@ -56,7 +62,7 @@ func (r *Router) initializeGQLResolvers() *resolvers.Resolver {
 
 // InitializeGRPCRoutes initializes the gRPC routes for all modules.
 func (r *Router) InitializeGRPCRoutes(server *grpc.Server) {
-	//pb.RegisterGatewayServiceServer(server, r.modules["NamespacesMod"].(ns.Module).API)
+	pb.RegisterGatewayServiceServer(server, r.modules["gateway"].(gateway.Module).API)
 }
 
 // GetModules returns the map of modules.
